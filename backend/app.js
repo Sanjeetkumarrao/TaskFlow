@@ -1,5 +1,7 @@
 import express from 'express';
 import authRoutes from "./routes/authRoutes.js";
+import taskRoutes from "./routes/taskRoutes.js";
+import { authMiddleware } from './middleware/authMiddleware.js';
 const app = express();
 
 app.use(express.json());
@@ -10,5 +12,6 @@ app.get('/', (req , res ) => {
 
 
 app.use("/api/auth", authRoutes);
+app.use("/api/tasks", authMiddleware, taskRoutes);
 
 export default app;
