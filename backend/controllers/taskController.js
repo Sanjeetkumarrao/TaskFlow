@@ -59,3 +59,20 @@ export const updateTask = async (req , res ) => {
         })
     }
 }
+
+
+export const deleteTask = async(req ,res) =>{
+    try {
+        const taskId = req.params.id;
+        const deletedTask = await Task.findByIdAndDelete(taskId)
+
+        return res.status(200).json({
+            message: "Task Deleted.",
+            deletedTask
+        })
+    } catch (error) {
+        res.status(500).json({
+            message: error.message
+        })
+    }
+}
