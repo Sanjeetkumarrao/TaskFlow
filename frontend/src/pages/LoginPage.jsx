@@ -1,13 +1,27 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Mail, Lock, ArrowRight } from "lucide-react";
+import api from "../utils/api";
 
 function LoginPage() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [error, setError] = useState("");
+    const navigate = useNavigate();
 
-    const handleLogin = () => {
-        console.log(email, password);
+    const handleLogin = async() => {
+        try {
+            const response = await api.post('/auth/login',{
+                email,
+                password
+            })
+
+            localStorage.setItem("token", response.data.token)
+            console.log(response.data);
+            navigate('/dashboard');
+        } catch (error) {
+            setError(error.response.data.message);
+        }
     };
 
     return (
@@ -72,6 +86,11 @@ function LoginPage() {
                                 className="transition-transform duration-300 group-hover:translate-x-1"
                             />
                         </button>
+                        {error && (
+                        <p className="text-red-400 text-sm text-center mt-2">
+                            {error}
+                        </p>
+                        )}
                     </div>
                 </div>
 

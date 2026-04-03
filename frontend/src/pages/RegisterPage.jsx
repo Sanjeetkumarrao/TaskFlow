@@ -107,7 +107,7 @@ function RegisterPage() {
                         <p className="text-red-400 text-sm text-center mt-2">
                             {error}
                         </p>
-                    )}
+                        )}
                     </div>
                 </div>
 
