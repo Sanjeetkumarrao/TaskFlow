@@ -17,6 +17,7 @@ function LoginPage() {
             })
 
             localStorage.setItem("token", response.data.token)
+            localStorage.setItem("user", JSON.stringify(response.data.user))
             console.log(response.data);
             navigate('/dashboard');
         } catch (error) {
