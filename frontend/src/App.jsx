@@ -1,10 +1,15 @@
+import {Routes, Route} from 'react-router-dom';
+import LoginPage from './pages/LoginPage';
+import RegisterPage from './pages/RegisterPage';
+import Dashboard from './pages/Dashboard';
+
 function App() {
   return (
-    <div>
-      <h1 className="text-3xl font-bold text-blue-500">
-        TaskFlow
-      </h1>
-    </div>
+    <Routes>
+      <Route path='/login' element={<LoginPage/>} ></Route>
+      <Route path='/register' element={<RegisterPage/>} ></Route>
+      <Route path='/dashboard' element={<Dashboard/>} ></Route>
+    </Routes>
   )
 }
 
