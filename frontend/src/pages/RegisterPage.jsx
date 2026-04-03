@@ -1,14 +1,28 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import { User, Mail, Lock, ArrowRight } from "lucide-react";
+import api from "../utils/api.js";
 
 function RegisterPage() {
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [error, setError] = useState("");
+    const navigate = useNavigate();
 
-    const handleRegister = () => {
-        console.log(name, email, password);
+    const handleRegister = async() => {
+        try {
+            const response = await api.post("/auth/register", {
+                name,
+                email,
+                password
+            })
+
+            console.log(response.data);
+            navigate("/login")  
+        } catch (error) {
+            setError(error.response.data.message)
+        }
     };
 
     return (
@@ -89,6 +103,11 @@ function RegisterPage() {
                                 className="transition-transform duration-300 group-hover:translate-x-1"
                             />
                         </button>
+                        {error && (
+                        <p className="text-red-400 text-sm text-center mt-2">
+                            {error}
+                        </p>
+                    )}
                     </div>
                 </div>
 
