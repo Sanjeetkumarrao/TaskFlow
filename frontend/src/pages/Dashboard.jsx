@@ -33,6 +33,15 @@ function Dashboard() {
         }
     };
 
+    const deleteTask = async(taskId) => {
+        try {
+            const task = await api.delete(`/tasks/${taskId}`);
+            fetchTasks();
+        } catch(error) {
+            console.log(error)
+        }
+    }
+
     useEffect(() => {
         fetchTasks();
     }, []);
@@ -111,7 +120,9 @@ function Dashboard() {
                             </div>
 
                             {/* Delete Button */}
-                            <button className="text-xs text-red-400 hover:text-red-300 border border-red-400/20 hover:border-red-400/40 px-3 py-1.5 rounded-xl transition-all duration-300">
+                            <button
+                            onClick={() => deleteTask(task._id)}
+                            className="text-xs text-red-400 hover:text-red-300 border border-red-400/20 hover:border-red-400/40 px-3 py-1.5 rounded-xl transition-all duration-300">
                                 Delete
                             </button>
                         </div>
