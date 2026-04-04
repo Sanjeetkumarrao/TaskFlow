@@ -36,6 +36,16 @@ function Dashboard() {
         }
     };
 
+    const toggleStatus = async(taskId, currentStatus) => {
+        try {
+            const newStatus = currentStatus === "pending" ? "completed" : "pending"
+            await api.put(`/tasks/${taskId}`, {status: newStatus})
+            fetchTasks();
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     const deleteTask = async (taskId) => {
         try {
             await api.delete(`/tasks/${taskId}`);
@@ -147,10 +157,21 @@ function Dashboard() {
                                     </div>
                                 </div>
 
-                                {/* Delete Button */}
+                                {/* Complete Button */} 
+                                <button
+                                    onClick={() => toggleStatus(task._id, task.status)}
+                                    className={`w-full sm:w-auto text-xs font-medium px-4 py-2 rounded-xl transition-all duration-300 border active:scale-[0.98] ${
+                                        task.status === "completed"
+                                            ? "bg-emerald-500/15 text-emerald-400 border-emerald-400/20 hover:bg-emerald-500/20 hover:border-emerald-400/40 hover:text-emerald-300"
+                                            : "bg-green-500/10 text-green-400 border-green-400/20 hover:bg-green-500/15 hover:border-green-400/40 hover:text-green-300"
+                                    }`}
+                                >
+                                    {task.status === "pending" ? "✓ Complete" : "↺ Mark Pending"}
+                                </button>
+
                                 <button
                                     onClick={() => deleteTask(task._id)}
-                                    className="w-full sm:w-auto text-xs text-red-400 hover:text-red-300 border border-red-400/20 hover:border-red-400/40 px-4 py-2 rounded-xl transition-all duration-300"
+                                    className="w-full sm:w-auto text-xs font-medium text-red-400 hover:text-red-300 border border-red-400/20 hover:border-red-400/40 bg-red-500/5 hover:bg-red-500/10 px-4 py-2 rounded-xl transition-all duration-300 active:scale-[0.98]"
                                 >
                                     Delete
                                 </button>

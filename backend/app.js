@@ -7,6 +7,7 @@ const app = express();
 
 app.use(cors({
     origin: "https://inspiring-scone-85621e.netlify.app"
+    // origin: "http://localhost:5173"
 }))
 
 app.use(express.json());
