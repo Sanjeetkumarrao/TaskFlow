@@ -7,6 +7,8 @@ function Dashboard() {
     const [loading, setLoading] = useState(true);
     const [title, setTitle] = useState("");
     const [priority, setPriority] = useState("low");
+    const [editingTaskId, setEditingTaskId] = useState(null);
+    const [editedTitle, setEditedTitle] = useState("");
 
     const fetchTasks = async () => {
         try {
@@ -34,6 +36,27 @@ function Dashboard() {
         } catch (error) {
             console.log(error);
         }
+    };
+
+    const updateTaskTitle = async (taskId) => {
+        if (!editedTitle.trim()) return;
+
+        try {
+            await api.put(`/tasks/${taskId}`, {
+                title: editedTitle,
+            });
+
+            setEditingTaskId(null);
+            setEditedTitle("");
+            fetchTasks();
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    const handleEditClick = (task) => {
+        setEditingTaskId(task._id);
+        setEditedTitle(task.title);
     };
 
     const toggleStatus = async(taskId, currentStatus) => {
@@ -136,9 +159,39 @@ function Dashboard() {
                                 className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 rounded-2xl border border-white/10 bg-zinc-900/60 backdrop-blur-xl px-5 py-4 transition-all duration-300 hover:border-white/20"
                             >
                                 <div className="min-w-0">
-                                    <p className="text-white font-medium break-words">
-                                        {task.title}
-                                    </p>
+                                    {editingTaskId === task._id ? (
+                                        <div className="space-y-2">
+                                            <input
+                                                type="text"
+                                                value={editedTitle}
+                                                onChange={(e) => setEditedTitle(e.target.value)}
+                                                className="w-full bg-zinc-900/70 border border-white/10 text-white text-sm placeholder:text-zinc-500 px-4 py-2.5 rounded-xl outline-none transition-all duration-300 focus:border-blue-500/60 focus:ring-4 focus:ring-blue-500/10"
+                                            />
+
+                                            <div className="flex flex-col sm:flex-row gap-2">
+                                                <button
+                                                    onClick={() => updateTaskTitle(task._id)}
+                                                    className="w-full sm:w-auto text-xs font-medium px-4 py-2 rounded-xl transition-all duration-300 border border-blue-400/20 bg-blue-500/10 text-blue-400 hover:bg-blue-500/15 hover:border-blue-400/40 hover:text-blue-300 active:scale-[0.98]"
+                                                >
+                                                    Save
+                                                </button>
+
+                                                <button
+                                                    onClick={() => {
+                                                        setEditingTaskId(null);
+                                                        setEditedTitle("");
+                                                    }}
+                                                    className="w-full sm:w-auto text-xs font-medium px-4 py-2 rounded-xl transition-all duration-300 border border-white/10 bg-white/5 text-zinc-300 hover:bg-white/10 hover:text-white active:scale-[0.98]"
+                                                >
+                                                    Cancel
+                                                </button>
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <p className="text-white font-medium break-words">
+                                            {task.title}
+                                        </p>
+                                    )}
 
                                     <div className="flex flex-wrap items-center gap-2 mt-2 text-xs">
                                         <span className="text-zinc-500 capitalize">
@@ -157,24 +210,34 @@ function Dashboard() {
                                     </div>
                                 </div>
 
-                                {/* Complete Button */} 
-                                <button
-                                    onClick={() => toggleStatus(task._id, task.status)}
-                                    className={`w-full sm:w-auto text-xs font-medium px-4 py-2 rounded-xl transition-all duration-300 border active:scale-[0.98] ${
-                                        task.status === "completed"
-                                            ? "bg-emerald-500/15 text-emerald-400 border-emerald-400/20 hover:bg-emerald-500/20 hover:border-emerald-400/40 hover:text-emerald-300"
-                                            : "bg-green-500/10 text-green-400 border-green-400/20 hover:bg-green-500/15 hover:border-green-400/40 hover:text-green-300"
-                                    }`}
-                                >
-                                    {task.status === "pending" ? "✓ Complete" : "↺ Mark Pending"}
-                                </button>
+                                {editingTaskId !== task._id && (
+                                    <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+                                        <button
+                                            onClick={() => handleEditClick(task)}
+                                            className="w-full sm:w-auto text-xs font-medium text-blue-400 hover:text-blue-300 border border-blue-400/20 hover:border-blue-400/40 bg-blue-500/5 hover:bg-blue-500/10 px-4 py-2 rounded-xl transition-all duration-300 active:scale-[0.98]"
+                                        >
+                                            Edit
+                                        </button>
 
-                                <button
-                                    onClick={() => deleteTask(task._id)}
-                                    className="w-full sm:w-auto text-xs font-medium text-red-400 hover:text-red-300 border border-red-400/20 hover:border-red-400/40 bg-red-500/5 hover:bg-red-500/10 px-4 py-2 rounded-xl transition-all duration-300 active:scale-[0.98]"
-                                >
-                                    Delete
-                                </button>
+                                        <button
+                                            onClick={() => toggleStatus(task._id, task.status)}
+                                            className={`w-full sm:w-auto text-xs font-medium px-4 py-2 rounded-xl transition-all duration-300 border active:scale-[0.98] ${
+                                                task.status === "completed"
+                                                    ? "bg-emerald-500/15 text-emerald-400 border-emerald-400/20 hover:bg-emerald-500/20 hover:border-emerald-400/40 hover:text-emerald-300"
+                                                    : "bg-green-500/10 text-green-400 border-green-400/20 hover:bg-green-500/15 hover:border-green-400/40 hover:text-green-300"
+                                            }`}
+                                        >
+                                            {task.status === "pending" ? "✓ Complete" : "↺ Mark Pending"}
+                                        </button>
+
+                                        <button
+                                            onClick={() => deleteTask(task._id)}
+                                            className="w-full sm:w-auto text-xs font-medium text-red-400 hover:text-red-300 border border-red-400/20 hover:border-red-400/40 bg-red-500/5 hover:bg-red-500/10 px-4 py-2 rounded-xl transition-all duration-300 active:scale-[0.98]"
+                                        >
+                                            Delete
+                                        </button>
+                                    </div>
+                                )}
                             </div>
                         ))}
                     </div>

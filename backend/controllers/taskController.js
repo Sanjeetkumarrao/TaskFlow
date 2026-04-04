@@ -37,29 +37,33 @@ export const getTasks = async (req ,res ) => {
     }
 }
 
-
-export const updateTask = async (req , res ) => {
+export const updateTask = async (req, res) => {
     try {
         const taskId = req.params.id;
         const data = req.body;
-    
+
         const updatedTask = await Task.findByIdAndUpdate(
             taskId,
             data,
-            {new: true}
-        )
-    
-        return res.status(200).json({
-            message: "Task Updated Successful",
-            updatedTask
-        })
-    } catch (error) {
-        res.status(500).json({
-            message: error.message
-        })
-    }
-}
+            { new: true, runValidators: true }
+        );
 
+        if (!updatedTask) {
+            return res.status(404).json({
+                message: "Task not found"
+            });
+        }
+
+        return res.status(200).json({
+            message: "Task Updated Successfully",
+            updatedTask
+        });
+    } catch (error) {
+        return res.status(500).json({
+            message: error.message
+        });
+    }
+};
 
 export const deleteTask = async(req ,res) =>{
     try {
