@@ -8,6 +8,7 @@ function RegisterPage() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
+    const [success, setSuccess] = useState("");
     const navigate = useNavigate();
 
     const handleRegister = async () => {
@@ -21,7 +22,9 @@ function RegisterPage() {
             });
 
             console.log(response.data);
-            navigate("/login");
+            // navigate("/login");
+            setError("");
+            setSuccess("Registration successful! Please check your email to verify your account.")
         } catch (error) {
             setError(error?.response?.data?.message || "Something went wrong");
         }
@@ -111,6 +114,12 @@ function RegisterPage() {
                                 className="transition-transform duration-300 group-hover:translate-x-1"
                             />
                         </button>
+
+                        {success && (
+                            <p className="text-green-400 text-sm text-center mt-2">
+                                {success}
+                            </p>
+                        )}
                     </div>
                 </div>
 
