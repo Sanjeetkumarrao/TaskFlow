@@ -78,10 +78,6 @@ export const verifyEmail = async (req ,res ) => {
                     <a href="https://inspiring-scone-85621e.netlify.app/login">
                         Login here !!
                     </a>
-                    
-                    // <a href="http://localhost:5173/login">
-                    //     Login here !!
-                    // </a>
                 </body>
             </html>
         `)
@@ -137,3 +133,10 @@ export const loginUser = async (req , res) => {
         res.status(500).json({ message: error.message })
     }
 }
+
+
+
+                    
+{/* <a href="http://localhost:5173/login">
+    Login here !!
+</a> */}
