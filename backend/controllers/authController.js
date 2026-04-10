@@ -27,7 +27,9 @@ export const registerUser = async(req , res ) => {
             verificationToken: verificationToken
         });
 
-        const verifyURL = `http://localhost:5000/api/auth/verify/${verificationToken}`
+        // const verifyURL = `http://localhost:5000/api/auth/verify/${verificationToken}`
+
+        const verifyURL = `https://taskflow-edwh.onrender.com/api/auth/verify/${verificationToken}`
 
         await transporter.sendMail({
             from: process.env.EMAIL,
