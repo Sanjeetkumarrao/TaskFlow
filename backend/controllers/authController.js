@@ -76,6 +76,9 @@ export const verifyEmail = async (req ,res ) => {
                 <body style="font-family: sans-serif; text-align: center; padding: 50px;">
                     <h1>✅ Email Verified!</h1>
                     <a href="https://inspiring-scone-85621e.netlify.app/login">
+                        Login here !!
+                    </a>
+                    
                     // <a href="http://localhost:5173/login">
                     //     Login here !!
                     // </a>
