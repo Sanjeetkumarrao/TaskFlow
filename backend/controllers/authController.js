@@ -1,6 +1,8 @@
 import User from "../models/User.js";
 import bcrypt from "bcryptjs";
 import jwt from 'jsonwebtoken';
+import crypto from "crypto";
+import transporter from "../config/emailConfig.js";
 
 //Register Controller
 export const registerUser = async(req , res ) => {
@@ -16,12 +18,27 @@ export const registerUser = async(req , res ) => {
     
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
+        const verificationToken = crypto.randomBytes(32).toString("hex")
     
         const user = await User.create({
             name: name,
             email: email,
             password: hashedPassword,
+            verificationToken: verificationToken
         });
+
+        const verifyURL = `http://localhost:5000/api/auth/verify/${verificationToken}`
+
+        await transporter.sendMail({
+            from: process.env.EMAIL,
+            to: email,
+            subject: "Verify your TaskFlow account",
+            html: `
+                <h2>Welcome to TaskFlow !</h2>
+                <p>Click below to verify your email:</p>
+                <a href="${verifyURL}"> Verify Email</a> 
+            `
+        })
     
         return res.status(201).json({
             message: "User Registered succesfully !",
@@ -35,6 +52,38 @@ export const registerUser = async(req , res ) => {
         res.status(500).json({message: error.message})
     }
 };
+
+
+export const verifyEmail = async (req ,res ) => {
+    try {
+        const {token} = req.params;
+        const user = await User.findOne({verificationToken: token})
+
+        if(!user) {
+            return res.status(400).json({
+                message: "Invalid token"
+            })
+        }
+
+        user.isVerified = true;
+        user.verificationToken = "";
+        await user.save()
+
+        res.status(200).send(`
+            <html>
+                <body style="font-family: sans-serif; text-align: center; padding: 50px;">
+                    <h1>✅ Email Verified!</h1>
+                    <a href="https://inspiring-scone-85621e.netlify.app/login">
+                    // <a href="http://localhost:5173/login">
+                    //     Login here !!
+                    // </a>
+                </body>
+            </html>
+        `)
+    } catch (error) {
+        res.status(500).json({message: error.message})
+    }
+}
 
 
 // LOGIN controller
@@ -55,6 +104,12 @@ export const loginUser = async (req , res) => {
         if(!isMatch){
             return res.status(401).json({
                 message: "Incorrect password !!"
+            })
+        }
+
+        if(!existingEmail.isVerified) {
+            return res.status(401).json({
+                message: "Please verify your email first !"
             })
         }
     
