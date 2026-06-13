@@ -35,17 +35,18 @@ export const registerUser = async(req , res ) => {
 
         const verifyURL = `https://taskflow-edwh.onrender.com/api/auth/verify/${verificationToken}`
 
-        await transporter.sendMail({
-            from: process.env.EMAIL,
-            to: email,
-            subject: "Verify your TaskFlow account",
-            html: `
-                <h2>Welcome to TaskFlow !</h2>
-                <p>Click below to verify your email:</p>
-                <a href="${verifyURL}"> Verify Email</a> 
-            `
-        })
-    
+        const info = await transporter.sendMail({
+        from: process.env.EMAIL,
+        to: email,
+        subject: "Verify your TaskFlow account",
+        html: `
+            <h2>Welcome to TaskFlow!</h2>
+            <p>Click below to verify your email:</p>
+            <a href="${verifyURL}">Verify Email</a>
+        `
+        });
+
+        console.log("MAIL INFO =>", info);
         return res.status(201).json({
             message: "User Registered succesfully !",
             user: {

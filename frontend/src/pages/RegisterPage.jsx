@@ -21,7 +21,7 @@ function RegisterPage() {
                 password,
             });
 
-            console.log(response.data);
+            // console.log(response.data);
             // navigate("/login");
             setError("");
             setSuccess("Registration successful! Please check your email to verify your account.")
