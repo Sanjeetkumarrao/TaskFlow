@@ -22,9 +22,10 @@ function RegisterPage() {
             });
 
             // console.log(response.data);
-            // navigate("/login");
+            navigate("/login");
             setError("");
-            setSuccess("Registration successful! Please check your email to verify your account.")
+            setSuccess("Registration successful! ",
+            navigate("/login"))
         } catch (error) {
             setError(error?.response?.data?.message || "Something went wrong");
         }
