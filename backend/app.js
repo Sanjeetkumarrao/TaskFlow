@@ -6,7 +6,7 @@ import cors from 'cors'
 const app = express();
 
 app.use(cors({
-    origin: "https://inspiring-scone-85621e.netlify.app"
+    origin: "https://task-flow-beige-eight.vercel.app"
     // origin: "http://localhost:5173"
 }))
 
